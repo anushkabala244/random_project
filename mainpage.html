@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory Management System</title>
+
+    <!-- Connecting CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Inventory Management System</h1>
+
+        <!-- Product Form -->
+        <div class="form-box">
+
+            <h2>Add Product</h2>
+
+            <input
+                type="text"
+                id="productName"
+                placeholder="Enter Product Name"
+            >
+
+            <input
+                type="number"
+                id="productQuantity"
+                placeholder="Enter Quantity"
+            >
+
+            <input
+                type="number"
+                id="productPrice"
+                placeholder="Enter Price"
+            >
+
+            <button onclick="addProduct()">
+                Add Product
+            </button>
+
+        </div>
+
+
+        <!-- Inventory Table -->
+        <div class="table-box">
+
+            <h2>Product Inventory</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Value</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="inventoryList">
+
+                    <!-- Products will appear here -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Total Inventory Value -->
+        <div class="total-box">
+
+            <h2>
+                Total Inventory Value:
+                ₹<span id="totalValue">0</span>
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Connecting JavaScript file -->
+    <script src="script.js"></script>
+
+</body>
+</html>
