@@ -1,3 +1,1 @@
-Hello anushka!!
-hii
-Learning Git
+This is my first Git practical file.
