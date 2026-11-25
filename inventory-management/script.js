@@ -1271,3 +1271,44 @@ EOF
         initialize();
     }
 })();
+
+// Clear Product Search Feature
+(function () {
+    function addClearSearchButton() {
+        const searchInput = document.getElementById("productSearch");
+        if (!searchInput || document.getElementById("clearSearchBtn")) return;
+
+        const button = document.createElement("button");
+        button.id = "clearSearchBtn";
+        button.textContent = "Clear Search";
+
+        button.style.cssText = `
+            margin-left: 8px;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 6px;
+            background: #64748b;
+            color: white;
+            cursor: pointer;
+        `;
+
+        button.addEventListener("click", function () {
+            searchInput.value = "";
+            searchInput.dispatchEvent(
+                new Event("input", { bubbles: true })
+            );
+            searchInput.dispatchEvent(
+                new Event("change", { bubbles: true })
+            );
+            searchInput.focus();
+        });
+
+        searchInput.insertAdjacentElement("afterend", button);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", addClearSearchButton);
+    } else {
+        addClearSearchButton();
+    }
+})();
