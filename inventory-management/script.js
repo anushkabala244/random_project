@@ -1222,3 +1222,52 @@ EOF
         initialize();
     }
 })();
+
+// Low Stock Row Highlight Feature
+(function () {
+    const LOW_STOCK_LIMIT = 5;
+
+    function highlightLowStock() {
+        const tbody = document.getElementById("productTableBody");
+        if (!tbody) return;
+
+        Array.from(tbody.rows).forEach(row => {
+            const quantityCell = row.cells[5];
+            if (!quantityCell) return;
+
+            const quantity = parseInt(
+                quantityCell.textContent.replace(/[^0-9-]/g, ""),
+                10
+            ) || 0;
+
+            if (quantity <= LOW_STOCK_LIMIT) {
+                row.style.backgroundColor = "#fee2e2";
+                row.style.borderLeft = "4px solid #dc2626";
+                row.title = "Low stock: Reorder this product";
+            } else {
+                row.style.backgroundColor = "";
+                row.style.borderLeft = "";
+                row.title = "";
+            }
+        });
+    }
+
+    function initialize() {
+        const tbody = document.getElementById("productTableBody");
+        if (!tbody) return;
+
+        highlightLowStock();
+
+        new MutationObserver(highlightLowStock).observe(tbody, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+        initialize();
+    }
+})();
