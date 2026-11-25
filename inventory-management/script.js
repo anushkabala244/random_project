@@ -1103,3 +1103,40 @@ document.head.appendChild(printStyles);
         addBackupControls();
     }
 })();
+cat >> script.js <<'EOF'
+
+// Product Sorting Feature
+function sortInventoryProducts(sortBy) {
+    const tbody = document.getElementById("productTableBody");
+    if (!tbody) return;
+
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    const columnMap = {
+        name: 0,
+        price: 4,
+        quantity: 5
+    };
+
+    const column = columnMap[sortBy];
+    if (column === undefined) return;
+
+    rows.sort((a, b) => {
+        const first = a.cells[column]?.innerText.trim() || "";
+        const second = b.cells[column]?.innerText.trim() || "";
+
+        if (sortBy === "name") {
+            return first.localeCompare(second);
+        }
+
+        return (
+            Number(first.replace(/[^0-9.-]/g, "")) -
+            Number(second.replace(/[^0-9.-]/g, ""))
+        );
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+console.log("Product sorting feature loaded");
+EOF
