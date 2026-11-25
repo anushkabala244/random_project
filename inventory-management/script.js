@@ -1171,3 +1171,54 @@ EOF
         );
     });
 })();
+
+// Copy Product ID Feature
+(function () {
+    function addCopyButtons() {
+        const tbody = document.getElementById("productTableBody");
+        if (!tbody) return;
+
+        Array.from(tbody.rows).forEach(row => {
+            const idCell = row.cells[2];
+            if (!idCell || idCell.querySelector(".copy-id-btn")) return;
+
+            const productId = idCell.textContent.trim();
+            if (!productId) return;
+
+            const button = document.createElement("button");
+            button.className = "copy-id-btn";
+            button.textContent = "Copy ID";
+            button.style.cssText =
+                "margin-left:8px;padding:4px 8px;border:0;border-radius:5px;background:#2563eb;color:white;cursor:pointer;";
+
+            button.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(productId);
+                    button.textContent = "Copied!";
+                    setTimeout(() => button.textContent = "Copy ID", 1200);
+                } catch {
+                    alert("Could not copy Product ID.");
+                }
+            });
+
+            idCell.appendChild(button);
+        });
+    }
+
+    function initialize() {
+        const tbody = document.getElementById("productTableBody");
+        if (!tbody) return;
+
+        addCopyButtons();
+        new MutationObserver(addCopyButtons).observe(tbody, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+        initialize();
+    }
+})();
