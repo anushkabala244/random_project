@@ -1140,3 +1140,34 @@ function sortInventoryProducts(sortBy) {
 
 console.log("Product sorting feature loaded");
 EOF
+// Stock In and Stock Out Feature
+(function () {
+    const tbody = document.getElementById("productTableBody");
+    if (!tbody) {
+        console.log("Product table not found");
+        return;
+    }
+
+    tbody.addEventListener("click", function (event) {
+        const button = event.target.closest("[data-stock-action]");
+        if (!button) return;
+
+        const row = button.closest("tr");
+        const quantityCell = row?.cells[5];
+        if (!quantityCell) return;
+
+        const amount = button.dataset.stockAction === "in" ? 1 : -1;
+        const quantity = parseInt(quantityCell.textContent, 10) || 0;
+
+        if (quantity + amount < 0) {
+            alert("Stock cannot be negative.");
+            return;
+        }
+
+        quantityCell.textContent = quantity + amount;
+        localStorage.setItem(
+            "stock_" + row.cells[2]?.textContent.trim(),
+            quantity + amount
+        );
+    });
+})();
