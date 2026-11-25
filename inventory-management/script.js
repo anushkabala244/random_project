@@ -813,3 +813,24 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Stockify Inventory System initialized!");
 
 });
+
+// Keyboard shortcuts for inventory dashboard
+document.addEventListener("keydown", function (event) {
+    const searchInput = document.getElementById("productSearch");
+
+    // Command + K on Mac or Ctrl + K on Windows
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+
+        if (searchInput) {
+            searchInput.focus();
+        }
+    }
+
+    // Escape key clears the search field
+    if (event.key === "Escape" && searchInput) {
+        searchInput.value = "";
+        searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        searchInput.blur();
+    }
+});
