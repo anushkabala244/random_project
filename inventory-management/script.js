@@ -834,3 +834,61 @@ document.addEventListener("keydown", function (event) {
         searchInput.blur();
     }
 });
+
+// Print Inventory Report Feature
+(function () {
+    function addPrintButton() {
+        if (document.getElementById("printInventoryBtn")) return;
+
+        const button = document.createElement("button");
+        button.id = "printInventoryBtn";
+        button.textContent = "🖨 Print Inventory Report";
+
+        button.style.cssText = `
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            z-index: 9999;
+            padding: 13px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+
+        button.addEventListener("click", function () {
+            window.print();
+        });
+
+        document.body.appendChild(button);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", addPrintButton);
+    } else {
+        addPrintButton();
+    }
+})();
+
+// Print layout improvements
+const printStyles = document.createElement("style");
+printStyles.textContent = `
+    @media print {
+        #printInventoryBtn {
+            display: none !important;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        button {
+            box-shadow: none !important;
+        }
+    }
+`;
+document.head.appendChild(printStyles);
