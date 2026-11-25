@@ -979,3 +979,127 @@ document.head.appendChild(printStyles);
         addThemeButton();
     }
 })();
+
+// Inventory JSON Backup and Restore
+(function () {
+    function createBackup() {
+        const backupData = {
+            application: "Inventory Management System",
+            backupDate: new Date().toISOString(),
+            data: {}
+        };
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            backupData.data[key] = localStorage.getItem(key);
+        }
+
+        const blob = new Blob(
+            [JSON.stringify(backupData, null, 4)],
+            { type: "application/json" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "inventory-backup.json";
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
+
+    function restoreBackup(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            try {
+                const backup = JSON.parse(event.target.result);
+
+                if (
+                    backup.application !== "Inventory Management System" ||
+                    !backup.data ||
+                    typeof backup.data !== "object" ||
+                    Array.isArray(backup.data)
+                ) {
+                    throw new Error("Invalid backup file");
+                }
+
+                if (!confirm("Restore this backup? Existing matching data will be replaced.")) {
+                    return;
+                }
+
+                Object.entries(backup.data).forEach(([key, value]) => {
+                    if (typeof value === "string") {
+                        localStorage.setItem(key, value);
+                    }
+                });
+
+                alert("Backup restored successfully! Reloading dashboard.");
+                location.reload();
+            } catch (error) {
+                alert("Unable to restore. Please select a valid inventory backup.");
+            }
+        };
+
+        reader.readAsText(file);
+    }
+
+    function addBackupControls() {
+        if (document.getElementById("backupInventoryBtn")) return;
+
+        const container = document.createElement("div");
+        container.style.cssText = `
+            position: fixed;
+            right: 25px;
+            bottom: 145px;
+            z-index: 9999;
+            display: flex;
+            gap: 8px;
+        `;
+
+        const backupButton = document.createElement("button");
+        backupButton.id = "backupInventoryBtn";
+        backupButton.textContent = "⬇ Backup";
+
+        const restoreButton = document.createElement("button");
+        restoreButton.textContent = "⬆ Restore";
+
+        [backupButton, restoreButton].forEach(button => {
+            button.style.cssText = `
+                padding: 12px 16px;
+                border: none;
+                border-radius: 8px;
+                background: #0f766e;
+                color: white;
+                cursor: pointer;
+                font-weight: 600;
+            `;
+        });
+
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".json,application/json";
+        fileInput.hidden = true;
+
+        backupButton.addEventListener("click", createBackup);
+
+        restoreButton.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length) {
+                restoreBackup(fileInput.files[0]);
+                fileInput.value = "";
+            }
+        });
+
+        container.append(backupButton, restoreButton);
+        document.body.append(container, fileInput);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", addBackupControls);
+    } else {
+        addBackupControls();
+    }
+})();
