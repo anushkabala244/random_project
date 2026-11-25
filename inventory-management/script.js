@@ -892,3 +892,90 @@ printStyles.textContent = `
     }
 `;
 document.head.appendChild(printStyles);
+
+// Dark Mode and Light Mode Toggle
+(function () {
+    const savedTheme = localStorage.getItem("inventoryTheme") || "light";
+
+    const themeStyle = document.createElement("style");
+    themeStyle.textContent = `
+        body.dark-mode {
+            background: #111827 !important;
+            color: #f9fafb !important;
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode .stat-card,
+        body.dark-mode .dashboard-card,
+        body.dark-mode .alerts-panel,
+        body.dark-mode .inventory-section {
+            background: #1f2937 !important;
+            color: #f9fafb !important;
+            border-color: #374151 !important;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode table {
+            background: #273449 !important;
+            color: #f9fafb !important;
+        }
+
+        body.dark-mode th,
+        body.dark-mode td,
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode p {
+            color: #f9fafb;
+        }
+
+        #themeToggle {
+            position: fixed;
+            right: 25px;
+            bottom: 85px;
+            z-index: 9999;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #374151;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    `;
+    document.head.appendChild(themeStyle);
+
+    document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+    function addThemeButton() {
+        if (document.getElementById("themeToggle")) return;
+
+        const button = document.createElement("button");
+        button.id = "themeToggle";
+        button.textContent = savedTheme === "dark"
+            ? "☀️ Light Mode"
+            : "🌙 Dark Mode";
+
+        button.addEventListener("click", function () {
+            const isDark = document.body.classList.toggle("dark-mode");
+
+            localStorage.setItem(
+                "inventoryTheme",
+                isDark ? "dark" : "light"
+            );
+
+            button.textContent = isDark
+                ? "☀️ Light Mode"
+                : "🌙 Dark Mode";
+        });
+
+        document.body.appendChild(button);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", addThemeButton);
+    } else {
+        addThemeButton();
+    }
+})();
